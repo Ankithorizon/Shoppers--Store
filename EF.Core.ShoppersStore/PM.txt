@@ -1,0 +1,6 @@
+﻿EntityFrameworkCore\Add-Migration initial-auth-db-create -context EF.Core.ShoppersStore.Authentication.ApplicationDbContext -OutputDir AuthenticationMigrations
+EntityFrameworkCore\update-database -context EF.Core.ShoppersStore.Authentication.ApplicationDbContext
+
+Add-Migration initial-ss-db-create -context EF.Core.ShoppersStore.ShoppersStoreDB.ShoppersStoreContext -OutputDir ShoppersStoreDBMigrations
+update-database -context EF.Core.ShoppersStore.ShoppersStoreDB.ShoppersStoreContext
+

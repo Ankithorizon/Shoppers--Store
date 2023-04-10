@@ -1,0 +1,13 @@
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\bin\Debug\netcoreapp3.1\EF.Core.ShoppersStore.deps.json
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\bin\Debug\netcoreapp3.1\EF.Core.ShoppersStore.runtimeconfig.json
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\bin\Debug\netcoreapp3.1\EF.Core.ShoppersStore.runtimeconfig.dev.json
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\bin\Debug\netcoreapp3.1\EF.Core.ShoppersStore.dll
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\bin\Debug\netcoreapp3.1\EF.Core.ShoppersStore.pdb
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.AssemblyInfoInputs.cache
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.AssemblyInfo.cs
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.csproj.CoreCompileInputs.cache
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.dll
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.pdb
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.genruntimeconfig.cache
+C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.csproj.AssemblyReference.cache

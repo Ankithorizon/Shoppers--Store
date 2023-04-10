@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = ServiceLib.ShoppersStore
+build_property.ProjectDir = C:\Shoppers-Store\API-Shoppers-Store\ServiceLib.ShoppersStore\
