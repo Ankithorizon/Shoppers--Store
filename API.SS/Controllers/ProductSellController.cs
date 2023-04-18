@@ -32,13 +32,15 @@ namespace API.SS.Controllers
             bool modelInvalid = false;
             try
             {
+                // throw new Exception();
+
                 if (bill.Payment.PaymentType == 1)
                 {
                     // cash
                     if (bill.Payment.AmountPaid <= 0)
                     {
                         modelInvalid = true;
-                        ModelState.AddModelError("Amount Paid", "is Required !");
+                        ModelState.AddModelError("Amount Paid", "Amount Paid is Required !");
                         return BadRequest(ModelState);
                     }
                     bill = _productSellRepo.ProductBillCreate(bill);
@@ -50,26 +52,22 @@ namespace API.SS.Controllers
                     if (bill.Payment.CardNumber == null)
                     {
                         modelInvalid = true;
-                        ModelState.AddModelError("Card Number", "is Required !");
-                        // return BadRequest(ModelState);
+                        ModelState.AddModelError("Card Number", "Card Number is Required !");                        
                     }
                     if (bill.Payment.CardCVV <= 0)
                     {
                         modelInvalid = true;
-                        ModelState.AddModelError("Card CVV", "is Required !");
-                        // return BadRequest(ModelState);
+                        ModelState.AddModelError("Card CVV", "Card CVV is Required !");
                     }
                     if (bill.Payment.ValidMonth <= 0)
                     {
                         modelInvalid = true;
-                        ModelState.AddModelError("Month", "is Required !");
-                        // return BadRequest(ModelState);
+                        ModelState.AddModelError("Month", "Month is Required !");
                     }
                     if (bill.Payment.ValidYear <= 0)
                     {
                         modelInvalid = true;
-                        ModelState.AddModelError("Year", "is Required !");
-                        // return BadRequest(ModelState);
+                        ModelState.AddModelError("Year", "Year is Required !");
                     }
                     if (!modelInvalid)
                     {

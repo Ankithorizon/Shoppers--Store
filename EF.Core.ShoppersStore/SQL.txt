@@ -1,0 +1,25 @@
+﻿-- products with category-name
+select p.ProductId, p.ProductName, p.CategoryId, c.CategoryName
+from Products p
+inner join Categories c
+on c.CategoryId=p.CategoryId
+
+
+-- total products by category
+select count(*) as Total_Products_By_Category, p.CategoryId, c.CategoryName
+from Products p
+inner join Categories c
+on c.CategoryId=p.CategoryId
+group by p.CategoryId, c.CategoryName
+
+
+-- left outer join
+-- left : categories
+-- right : products
+-- all categories, but some of them have no products[null]
+select p.ProductId, p.ProductName, c.CategoryId, c.CategoryName
+from Categories c
+left outer join Products p
+on c.CategoryId=p.CategoryId
+order by c.CategoryId
+
