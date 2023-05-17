@@ -28,4 +28,5 @@ namespace EF.Core.ShoppersStore.ShoppersStoreDB.Models
 
         public ICollection<ProductSell> ProductSells { get; set; }
     }
+
 }
