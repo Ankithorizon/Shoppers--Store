@@ -13,5 +13,6 @@ namespace ServiceLib.ShoppersStore.DTO
         public int BillQty { get; set; }
         public string BillRefCode { get; set; }
         public DateTime BillDate { get; set; }
+        public decimal AmountPaid { get; set; }
     }
 }

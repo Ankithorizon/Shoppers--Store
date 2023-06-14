@@ -9,10 +9,8 @@ namespace ServiceLib.ShoppersStore.Interfaces
 {
     public interface IReportRepository
     {
-        List<MonthlyTotalSalesData> TextReportMonthly(MonthlyTotalSalesData data);
-        List<MonthlyProductWiseSalesData> TextReportMonthlyProductWise(MonthlyProductWiseSalesData data);
         List<ProductWithImageDTO> GetProductsWithImage();
-        List<YearlyProductWiseSalesData> TextReportYearlyProductWise(YearlyProductWiseSalesData data);
-        List<ProductDiscountSalesData> TextReportProductDiscountWise(ProductDiscountSalesData data);
+        List<MonthlyTotalSalesData> MonthlyStoreWise(MonthlyTotalSalesData data);
+        List<YearlyProductWiseSalesData> MonthlyProductWise(YearlyProductWiseSalesData data);
     }
 }

@@ -24,13 +24,43 @@ namespace API.SS.Controllers
             _reportRepo = reportRepo;
         }
 
-        [HttpPost]
-        [Route("textReportMonthly")]
-        public IActionResult TextReportMonthly(MonthlyTotalSalesData data)
+        [HttpGet]
+        [Route("productsWithImage")]
+        public IActionResult GetProductsWithImage()
         {
             try
             {
-                List<MonthlyTotalSalesData> datas = _reportRepo.TextReportMonthly(data);
+                var allProducts = _reportRepo.GetProductsWithImage();
+                return Ok(allProducts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("monthlyStoreWise")]
+        public IActionResult MonthlyStoreWise(MonthlyTotalSalesData data)
+        {
+            try
+            {
+                List<MonthlyTotalSalesData> datas = _reportRepo.MonthlyStoreWise(data);
+                return Ok(datas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid Data !");
+            }
+        }
+
+        [HttpPost]
+        [Route("monthlyProductWise")]
+        public IActionResult MonthlyProductWise(YearlyProductWiseSalesData data)
+        {
+            try
+            {
+                List<YearlyProductWiseSalesData> datas = _reportRepo.MonthlyProductWise(data);
                 return Ok(datas);
             }
             catch (Exception ex)

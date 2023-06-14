@@ -10,4 +10,3 @@ C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3
 C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.dll
 C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.pdb
 C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.genruntimeconfig.cache
-C:\Shoppers-Store\API-Shoppers-Store\EF.Core.ShoppersStore\obj\Debug\netcoreapp3.1\EF.Core.ShoppersStore.csproj.AssemblyReference.cache
