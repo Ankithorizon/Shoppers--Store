@@ -12,5 +12,7 @@ namespace ServiceLib.ShoppersStore.Interfaces
         List<ProductWithImageDTO> GetProductsWithImage();
         List<MonthlyTotalSalesData> MonthlyStoreWise(MonthlyTotalSalesData data);
         List<YearlyProductWiseSalesData> MonthlyProductWise(YearlyProductWiseSalesData data);
+        List<MonthlyProductWiseSalesData> SelectedProductWise(MonthlyProductWiseSalesData data);
+
     }
 }

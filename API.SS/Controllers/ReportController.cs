@@ -68,5 +68,20 @@ namespace API.SS.Controllers
                 return BadRequest("Invalid Data !");
             }
         }
+
+        [HttpPost]
+        [Route("selectedProductWise")]
+        public IActionResult SelectedProductWise(MonthlyProductWiseSalesData data)
+        {
+            try
+            {
+                List<MonthlyProductWiseSalesData> datas = _reportRepo.SelectedProductWise(data);
+                return Ok(datas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid Data !");
+            }
+        }
     }
 }

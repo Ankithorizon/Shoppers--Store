@@ -226,5 +226,78 @@ namespace ServiceLib.ShoppersStore.Repositories
 
         }
 
+        public List<MonthlyProductWiseSalesData> SelectedProductWise(MonthlyProductWiseSalesData data)
+        {
+            List<MonthlyProductWiseSalesData> datas = new List<MonthlyProductWiseSalesData>();
+            // List<ProductSell> productSellsData = new List<ProductSell>();
+            List<ProductSellDTO> productSellsData = new List<ProductSellDTO>();
+
+            var selectedProduct = appDbContext.Products
+                                    .Include(x => x.ProductSells)
+                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefault();
+
+            if (selectedProduct != null)
+            {
+                var productName = selectedProduct.ProductName;
+
+                if (selectedProduct.ProductSells != null && selectedProduct.ProductSells.Count() > 0)
+                {
+                    foreach (var ps in selectedProduct.ProductSells)
+                    {
+                        var payment = appDbContext.Payments
+                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear) && x.TransactionDate.Month == data.SelectedMonth).FirstOrDefault();
+                        if (payment != null)
+                        {
+                            // productSellsData.Add(ps);
+                            productSellsData.Add(new ProductSellDTO()
+                            {
+                                BasePrice = ps.BasePrice,
+                                BillDate = payment.TransactionDate,
+                                BillQty = ps.BillQty,
+                                BillRefCode = ps.BillRefCode,
+                                CurrentPrice = ps.CurrentPrice,
+                                DiscountPercentage = ps.DiscountPercentage,
+                                ProductId = ps.ProductId,
+                                AmountPaid = payment.AmountPaid
+                            });
+                        }
+                        else
+                        {
+                            // related payment refcode or year or month not matched
+                        }
+                    }
+
+                    // group by on productSellsData
+                    var groupedData = from ps in productSellsData
+                                         group ps
+                                           by new { productId = ps.ProductId } into d
+                                         select new
+                                         {
+                                             ProductId = d.Key.productId,
+                                             // TotalSales = d.Sum(x => (x.CurrentPrice * x.BillQty))
+                                             TotalSales = d.Sum(x => (x.AmountPaid)),
+                                         };
+
+                    foreach (var data_ in groupedData)
+                    {
+                        datas.Add(new MonthlyProductWiseSalesData()
+                        {
+                            TotalSales = data_.TotalSales,
+                            SelectedMonth = data.SelectedMonth,
+                            SelectedProductId = data.SelectedProductId,
+                            SelectedProductName = productName,
+                            SelectedYear = data.SelectedYear
+                        });
+                    }
+                }
+                else
+                {
+                    // product found
+                    // but this product has 0 sales
+                }
+            }
+            return datas;
+        }
+
     }
 }

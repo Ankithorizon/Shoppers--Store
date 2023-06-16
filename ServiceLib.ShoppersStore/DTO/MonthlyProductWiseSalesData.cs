@@ -7,7 +7,7 @@ namespace ServiceLib.ShoppersStore.DTO
 {
     public class MonthlyProductWiseSalesData
     {
-        public string SelectedYear { get; set; } // ip
+        public int SelectedYear { get; set; } // ip
         public int SelectedMonth { get; set; } // ip // 1,2,3,...12
         public int SelectedProductId { get; set; } // ip
         public string SelectedProductName { get; set; }
