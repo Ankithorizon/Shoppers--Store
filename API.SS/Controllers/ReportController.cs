@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.SS.Controllers
 {
+    [Authorize("Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportController : ControllerBase
