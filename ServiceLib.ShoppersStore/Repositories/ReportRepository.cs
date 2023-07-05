@@ -299,5 +299,73 @@ namespace ServiceLib.ShoppersStore.Repositories
             return datas;
         }
 
+        public List<ProductDiscountSalesData> DiscountWise(ProductDiscountSalesData data)
+        {
+            List<ProductDiscountSalesData> datas = new List<ProductDiscountSalesData>();
+            List<ProductSellDTO> productSellsData = new List<ProductSellDTO>();
+
+            var selectedProduct = appDbContext.Products
+                                    .Include(x => x.ProductSells)
+                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefault();
+
+            var productName = "";
+
+            if (selectedProduct != null)
+            {
+                productName = selectedProduct.ProductName;
+
+                if (selectedProduct.ProductSells != null && selectedProduct.ProductSells.Count() > 0)
+                {
+                    foreach (var ps in selectedProduct.ProductSells)
+                    {
+                        var payment = appDbContext.Payments
+                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear)).FirstOrDefault();
+                        if (payment != null)
+                        {
+                            productSellsData.Add(new ProductSellDTO()
+                            {
+                                BasePrice = ps.BasePrice,
+                                BillDate = payment.TransactionDate,
+                                BillQty = ps.BillQty,
+                                BillRefCode = ps.BillRefCode,
+                                CurrentPrice = ps.CurrentPrice,
+                                DiscountPercentage = ps.DiscountPercentage,
+                                ProductId = ps.ProductId,
+                                AmountPaid = payment.AmountPaid
+                            });
+                        }
+                        else
+                        {
+                            // related payment refcode or year not matched
+                        }
+                    }
+
+                    var query = productSellsData.GroupBy(ps => ps.DiscountPercentage)
+                        .Select(group =>
+                            new {
+                                DiscountPercentage = group.Key,
+                                // TotalSales = group.Sum(x => (x.CurrentPrice * x.BillQty))
+                                TotalSales = group.Sum(x => (x.AmountPaid)),
+                            });
+                    foreach (var data_ in query)
+                    {
+                        datas.Add(new ProductDiscountSalesData()
+                        {
+                            DiscountPercentage = data_.DiscountPercentage,
+                            TotalSales = data_.TotalSales,
+                            SelectedProductId = data.SelectedProductId,
+                            SelectedProductName = productName,
+                            SelectedYear = data.SelectedYear
+                        });
+                    }
+                }
+                else
+                {
+                    // product found
+                    // but this product has 0 sales
+                }
+            }
+            return datas;
+        }
     }
 }

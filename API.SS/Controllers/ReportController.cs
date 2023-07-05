@@ -84,5 +84,21 @@ namespace API.SS.Controllers
                 return BadRequest("Invalid Data !");
             }
         }
+
+        [HttpPost]
+        [Route("discountWise")]
+        public IActionResult DiscountWise(ProductDiscountSalesData data)
+        {
+            try
+            {
+                List<ProductDiscountSalesData> datas = _reportRepo.DiscountWise(data);
+                return Ok(datas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid Data !");
+            }
+        }
+
     }
 }

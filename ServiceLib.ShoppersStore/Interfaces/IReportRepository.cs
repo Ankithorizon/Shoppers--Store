@@ -13,6 +13,6 @@ namespace ServiceLib.ShoppersStore.Interfaces
         List<MonthlyTotalSalesData> MonthlyStoreWise(MonthlyTotalSalesData data);
         List<YearlyProductWiseSalesData> MonthlyProductWise(YearlyProductWiseSalesData data);
         List<MonthlyProductWiseSalesData> SelectedProductWise(MonthlyProductWiseSalesData data);
-
+        List<ProductDiscountSalesData> DiscountWise(ProductDiscountSalesData data);
     }
 }
