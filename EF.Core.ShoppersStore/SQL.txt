@@ -48,3 +48,150 @@ BEGIN
 END;
 
 
+-------------------edit
+
+alter PROCEDURE DummyShopping
+(
+   @productId int
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    -- SAVE TRANSACTION MySavePoint;  
+
+	
+
+    BEGIN TRY
+      
+	  -- select product, if DiscountPrice=0 then take Price
+	  -- otherwise take DiscountPrice
+
+	  declare @basePrice decimal(18,2);
+	  declare @discountPercentage int;
+	  declare @currentPrice decimal(18,2);
+		select @basePrice = Price, 
+			@discountPercentage = DiscountPercentage, 
+			@currentPrice = case when DiscountPrice = 0 then Price else DiscountPrice end
+		from Products
+		-- where ProductId=@productId;
+		where ProductId=8;
+				
+		-- select @basePrice as BasePrice, @discountPercentage as DiscountPercentage, @currentPrice as CurrentPrice;
+
+		-- payment table
+		declare @paymentType int;
+		declare @billRefCode varchar(6);
+		declare @transactionDate Date;
+		declare @amountPaid decimal(18,2);
+		declare @billQty int;
+
+
+		set @paymentType = 1;  -- cash		
+		set @billRefCode = 'XXDE1B';		
+		set @transactionDate = GetDate();
+		set @billQty = 12;
+		
+		-- js
+		-- (Math.ceil(cartTotal_ * 20 - 0.5) / 20).toFixed(2)
+		set @amountPaid = Format(CEILING((@billQty*@currentPrice)*20-0.5)/20, 'N2');
+				
+		select @amountPaid as AmountPaid;
+
+		/*
+		insert into Payments
+		(PaymentType, AmountPaid, BillRefCode, TransactionDate)
+		values
+		(@paymentType, @amountPaid, @billRefCode, @transactionDate);
+		*/
+
+        COMMIT TRANSACTION 
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            -- ROLLBACK TRANSACTION MySavePoint; -- rollback to MySavePoint
+			ROLLBACK TRANSACTION;
+        END
+    END CATCH
+END;
+
+-------------------edit
+
+alter PROCEDURE DummyShopping
+(
+   @productId int
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    -- SAVE TRANSACTION MySavePoint;  
+
+	
+
+    BEGIN TRY
+      
+	
+	  -- products table
+	  declare @basePrice decimal(18,2);
+	  declare @discountPercentage int;
+	  declare @currentPrice decimal(18,2);
+
+		-- products table
+		-- select product, if DiscountPrice=0 then take Price
+			-- otherwise take DiscountPrice
+		select @basePrice = Price, 
+			@discountPercentage = DiscountPercentage, 
+			@currentPrice = case when DiscountPrice = 0 then Price else DiscountPrice end
+		from Products
+		where ProductId=@productId;
+				
+		-- select @basePrice as BasePrice, @discountPercentage as DiscountPercentage, @currentPrice as CurrentPrice;
+
+
+	  -- payments table
+	  declare @paymentType int;
+	  declare @billRefCode varchar(6);
+	  declare @transactionDate Date;
+	  declare @amountPaid decimal(18,2);
+	  declare @billQty int;
+
+		set @paymentType = 1;  -- cash		
+		set @billRefCode = 'XXDE1B';		
+		set @transactionDate = GetDate();
+		set @billQty = 12;
+		
+		-- js
+		-- (Math.ceil(cartTotal_ * 20 - 0.5) / 20).toFixed(2)
+		set @amountPaid = Format(CEILING((@billQty*@currentPrice)*20-0.5)/20, 'N2');
+				
+		-- select @amountPaid as AmountPaid;
+				
+		insert into Payments
+		(PaymentType, AmountPaid, BillRefCode, TransactionDate)
+		values
+		(@paymentType, @amountPaid, @billRefCode, @transactionDate);
+		
+	  -- productsells table
+	  declare @paymentId int;
+		set @paymentId = @@IDENTITY;
+
+		select @paymentId as PaymentId;
+
+		/*
+		insert into ProductSells
+		(ProductId, BasePrice, DiscountPercentage, CurrentPrice, BillQty, BillRefCode, PaymentId)
+		values
+		(@productId, @basePrice, @discountPercentage, @currentPrice, @billQty, @billRefCode, @paymentId);
+		*/
+		
+        COMMIT TRANSACTION 
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            -- ROLLBACK TRANSACTION MySavePoint; -- rollback to MySavePoint
+			ROLLBACK TRANSACTION;
+			print 'Error!';
+        END
+    END CATCH
+END;
