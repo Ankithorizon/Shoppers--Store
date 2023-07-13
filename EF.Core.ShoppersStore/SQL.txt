@@ -23,3 +23,28 @@ left outer join Products p
 on c.CategoryId=p.CategoryId
 order by c.CategoryId
 
+stored-procedure
+----------------
+CREATE PROCEDURE DummyShopping
+(
+   @numberOfShopping int
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    -- SAVE TRANSACTION MySavePoint;  
+
+    BEGIN TRY
+      
+        COMMIT TRANSACTION 
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            -- ROLLBACK TRANSACTION MySavePoint; -- rollback to MySavePoint
+			ROLLBACK TRANSACTION;
+        END
+    END CATCH
+END;
+
+
