@@ -476,4 +476,95 @@ BEGIN
     END CATCH
 END;
 
+-------------------edit
+
+alter PROCEDURE DummyShopping
+(
+   @productId int
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    -- SAVE TRANSACTION MySavePoint;  	
+
+    BEGIN TRY    
+	  -- products table
+		  declare @basePrice decimal(18,2);
+		  declare @discountPercentage int;
+		  declare @currentPrice decimal(18,2);
+
+			-- products table
+			-- select product, if DiscountPrice=0 then take Price
+				-- otherwise take DiscountPrice
+			select @basePrice = Price, 
+				@discountPercentage = DiscountPercentage, 
+				@currentPrice = case when DiscountPrice = 0 then Price else DiscountPrice end
+			from Products
+			where ProductId=@productId;
+				
+			select @basePrice as BasePrice, @discountPercentage as DiscountPercentage, @currentPrice as CurrentPrice;
+
+		  -- payments table
+		  declare @paymentType int;
+		  declare @billRefCode varchar(6);
+		  declare @transactionDate Date;
+		  declare @amountPaid decimal(18,2);
+		  declare @billQty int;
+
+		   -- productsells table
+		  declare @paymentId int;
+
+	  DECLARE @cnt INT = 0;
+
+	  -- 10 shopping for a @productId, each shopping on different day
+	  WHILE @cnt < 10 
+	  BEGIN
+
+		 -- payments table
+			set @paymentType = 1;  -- cash		
+			set @billRefCode = CONCAT(SUBSTRING(CONVERT(varchar(255), NEWID()), 1, 5),@cnt);		
+			set @transactionDate = DATEADD(DD, -@cnt, GETDATE()) -- GetDate();
+			set @billQty = 10+@cnt;
+		
+			-- js
+			-- (Math.ceil(cartTotal_ * 20 - 0.5) / 20).toFixed(2)
+			set @amountPaid = Format(CEILING((@billQty*@currentPrice)*20-0.5)/20, 'N2');
+				
+			select @amountPaid as AmountPaid;
+				
+			insert into Payments
+			(PaymentType, AmountPaid, CardNumber, CardCVV, CardType, ValidMonth, ValidYear, BillRefCode, TransactionDate)
+			values
+			(@paymentType, @amountPaid, null, 0, null, 0,0, @billRefCode, @transactionDate);
+	
+			-- select @@IDENTITY as LastRowValue;
+	
+		
+		  -- productsells table
+			set @paymentId = @@IDENTITY;
+
+			-- select @paymentId as PaymentId;
+		
+			insert into ProductSells
+			(ProductId, BasePrice, DiscountPercentage, CurrentPrice, BillQty, BillRefCode, PaymentId)
+			values
+			(@productId, @basePrice, @discountPercentage, @currentPrice, @billQty, @billRefCode, @paymentId);
+		
+		  SET @cnt = @cnt + 1;
+	  END;	-- while begin end
+	  
+	  COMMIT TRANSACTION;
+    END TRY -- begin try
+
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            -- ROLLBACK TRANSACTION MySavePoint; -- rollback to MySavePoint
+			ROLLBACK TRANSACTION;
+			print 'Error!';
+        END
+    END CATCH
+END;
+
+
 
