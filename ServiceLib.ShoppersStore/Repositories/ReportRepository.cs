@@ -75,7 +75,9 @@ namespace ServiceLib.ShoppersStore.Repositories
                                      TotalSales = d.Sum(x => x.AmountPaid)
                                  };
 
-            foreach (var data_ in groupedMonthly)
+            var orderedData = groupedMonthly.OrderBy(x => x.Month);
+            // foreach (var data_ in groupedMonthly)
+            foreach (var data_ in orderedData)
             {
                 datas.Add(new MonthlyTotalSalesData()
                 {
