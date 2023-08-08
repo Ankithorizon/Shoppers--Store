@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using EF.Core.ShoppersStore.ShoppersStoreDB.Models;
 using ServiceLib.ShoppersStore.DTO;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLib.ShoppersStore.Interfaces
 {
     public interface IProductRepository
     {
-        IEnumerable<Category> GetCategories();
+        Task<IEnumerable<Category>> GetCategories();
         Product AddProduct(Product product);        
         ProductFileAddResponse ProductFileAdd(AddProductFile addProductFile);        
         IEnumerable<ProductDTO> GetAllProducts();

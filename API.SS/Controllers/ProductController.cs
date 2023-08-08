@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using EF.Core.ShoppersStore.ShoppersStoreDB.Models;
 using ServiceLib.ShoppersStore.DTO;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.SS.Controllers
 {
@@ -30,12 +31,12 @@ namespace API.SS.Controllers
         [Authorize(Roles = "Shopper,Admin,Manager")]
         [HttpGet]
         [Route("getCategories")]
-        public IActionResult GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
             try
             {
                 // throw new Exception();
-                var _categories = _productRepo.GetCategories();
+                var _categories = await _productRepo.GetCategories();
                 return Ok(_categories);
             }
             catch (Exception ex)

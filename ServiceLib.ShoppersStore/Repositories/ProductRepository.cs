@@ -6,7 +6,8 @@ using ServiceLib.ShoppersStore.Interfaces;
 using EF.Core.ShoppersStore.ShoppersStoreDB;
 using EF.Core.ShoppersStore.ShoppersStoreDB.Models;
 using ServiceLib.ShoppersStore.DTO;
-
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLib.ShoppersStore.Repositories
 {
@@ -18,9 +19,9 @@ namespace ServiceLib.ShoppersStore.Repositories
             this.appDbContext = appDbContext;
         }
 
-        public IEnumerable<Category> GetCategories()
+        public async Task<IEnumerable<Category>> GetCategories()
         {
-            return appDbContext.Categories.ToList();
+            return await appDbContext.Categories.ToListAsync();
         }
 
 
