@@ -48,7 +48,7 @@ namespace API.SS.Controllers
         [Authorize("Admin")]
         [HttpPost]
         [Route("addProduct")]
-        public IActionResult AddProduct(Product product)
+        public async Task<IActionResult> AddProduct(Product product)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace API.SS.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var newProduct = _productRepo.AddProduct(product);
+                    var newProduct = await _productRepo.AddProduct(product);
                     if (newProduct!=null)
                         return Ok(new { ResponseCode = 200, ResponseMessage = "Product Created Successfully!" ,NewProduct = newProduct });
                     else
@@ -121,7 +121,7 @@ namespace API.SS.Controllers
                         FileName = fileName,
                         ProductId = Convert.ToInt32(addProductFile_.ProductId),
                     };
-                    response = _productRepo.ProductFileAdd(addProductFile);
+                    response = await _productRepo.ProductFileAdd(addProductFile);
                     return Ok(response);
                 }
                 else
@@ -142,7 +142,7 @@ namespace API.SS.Controllers
         [RequestSizeLimit(40000000)]
         [Route("productFileUpload_01")]
         #region file upload without any extra parameter,,, only file parameter
-        public IActionResult ProductFileUpload_01()
+        public async Task<IActionResult> ProductFileUpload_01()
         {
             ProductFileAddResponse response = new ProductFileAddResponse();
             try
@@ -165,7 +165,7 @@ namespace API.SS.Controllers
                         FilePath = finalPath,
                         FileName = fileName
                     };
-                    response = _productRepo.ProductFileAdd(addProductFile);
+                    response = await _productRepo.ProductFileAdd(addProductFile);
                     return Ok(response);
                 }
                 else
@@ -184,18 +184,18 @@ namespace API.SS.Controllers
         [Authorize(Roles = "Shopper,Admin,Manager")]
         [HttpGet]
         [Route("allProducts")]
-        public IActionResult GetAllProducts(string searchValue, string categoryId)
+        public async Task<IActionResult> GetAllProducts(string searchValue, string categoryId)
         {
             try
             {              
                 if ((searchValue=="" || searchValue == null) && (categoryId == null || Convert.ToInt32(categoryId)==0 ))
                 {
-                    var allProducts = _productRepo.GetAllProducts();
+                    var allProducts = await _productRepo.GetAllProducts();
                     return Ok(allProducts);
                 }
                 else
                 {
-                    var allProducts = _productRepo.SearchProducts(searchValue, categoryId);
+                    var allProducts = await _productRepo.SearchProducts(searchValue, categoryId);
                     return Ok(allProducts);
                 }
             }
@@ -209,13 +209,13 @@ namespace API.SS.Controllers
         [Authorize(Roles = "Admin,Manager")]
         [HttpGet]
         [Route("getProduct/{selectedProductId}")]
-        public IActionResult GetProduct(int selectedProductId)
+        public async Task<IActionResult> GetProduct(int selectedProductId)
         {
             try
             {
                 // throw new Exception();
 
-                var product = _productRepo.GetProduct(selectedProductId);
+                var product = await _productRepo.GetProduct(selectedProductId);
 
                 if (product == null || product.ProductId==0)
                 {
@@ -236,7 +236,7 @@ namespace API.SS.Controllers
         [Authorize("Admin")]
         [HttpPost]
         [Route("editProduct/{editingProductId}")]
-        public IActionResult EditProduct(int editingProductId, ProductDTO product)
+        public async Task<IActionResult> EditProduct(int editingProductId, ProductDTO product)
         {
             APIResponse response = new APIResponse();
             try
@@ -247,7 +247,7 @@ namespace API.SS.Controllers
                 if (ModelState.IsValid)
                 {
                     
-                    ProductDTO editedProduct = _productRepo.EditProduct(product);
+                    ProductDTO editedProduct = await _productRepo.EditProduct(product);
                     if (editedProduct != null)
                     {
                         response.ResponseCode = 200;
@@ -279,7 +279,7 @@ namespace API.SS.Controllers
         [HttpPost]
         [RequestSizeLimit(40000000)]
         [Route("editProductFileUpload")]
-        public IActionResult EditProductFileUpload(IFormCollection data)
+        public async Task<IActionResult> EditProductFileUpload(IFormCollection data)
         {         
             try
             {
@@ -331,7 +331,7 @@ namespace API.SS.Controllers
                         ProductImage = productFile.FileName,
                         ProductImagePath = productFile.FilePath
                     };
-                    response = _productRepo.ProductFileEdit(_productFile);
+                    response = await _productRepo.ProductFileEdit(_productFile);
                     return Ok(response);
                 }
                 else
@@ -350,7 +350,7 @@ namespace API.SS.Controllers
         [Authorize("Manager")]
         [HttpPost]
         [Route("setProductDiscount")]
-        public IActionResult SetProductDiscount(ProductDiscountDTO discount)
+        public async Task<IActionResult> SetProductDiscount(ProductDiscountDTO discount)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace API.SS.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    discount = _productRepo.SetProductDiscount(discount);
+                    discount = await _productRepo.SetProductDiscount(discount);
                     return Ok(discount);
                 }
                 else
@@ -383,14 +383,14 @@ namespace API.SS.Controllers
         [Authorize("Manager")]
         [HttpGet]
         [Route("resetProductDiscount/{selectedProductId}")]
-        public IActionResult ResetProductDiscount(int selectedProductId)
+        public async Task<IActionResult> ResetProductDiscount(int selectedProductId)
         {
             try
             {
 
                 // throw new Exception();
 
-                if (_productRepo.ResetProductDiscount(selectedProductId))
+                if (await _productRepo.ResetProductDiscount(selectedProductId))
                     return Ok();
                 else
                     return StatusCode(500, "Server Error !");

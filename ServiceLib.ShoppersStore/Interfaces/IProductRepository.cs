@@ -11,14 +11,14 @@ namespace ServiceLib.ShoppersStore.Interfaces
     public interface IProductRepository
     {
         Task<IEnumerable<Category>> GetCategories();
-        Product AddProduct(Product product);        
-        ProductFileAddResponse ProductFileAdd(AddProductFile addProductFile);        
-        IEnumerable<ProductDTO> GetAllProducts();
-        IEnumerable<ProductDTO> SearchProducts(string searchValue, string categoryId);        
-        ProductDTO GetProduct(int productId);        
-        ProductDTO EditProduct(ProductDTO product);        
-        ProductFileEditResponse ProductFileEdit(ProductFileEditResponse _productFile);        
-        ProductDiscountDTO SetProductDiscount(ProductDiscountDTO discount);
-        bool ResetProductDiscount(int productId);
+        Task<Product> AddProduct(Product product);        
+        Task<ProductFileAddResponse> ProductFileAdd(AddProductFile addProductFile);        
+        Task<IEnumerable<ProductDTO>> GetAllProducts();
+        Task<IEnumerable<ProductDTO>> SearchProducts(string searchValue, string categoryId);        
+        Task<ProductDTO> GetProduct(int productId);        
+        Task<ProductDTO> EditProduct(ProductDTO product);        
+        Task<ProductFileEditResponse> ProductFileEdit(ProductFileEditResponse _productFile);        
+        Task<ProductDiscountDTO> SetProductDiscount(ProductDiscountDTO discount);
+        Task<bool> ResetProductDiscount(int productId);
     }
 }

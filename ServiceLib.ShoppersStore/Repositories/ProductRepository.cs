@@ -25,14 +25,14 @@ namespace ServiceLib.ShoppersStore.Repositories
         }
 
 
-        public Product AddProduct(Product product)
+        public async Task<Product> AddProduct(Product product)
         {
             try
             {
                 // throw new Exception();
 
                 var result = appDbContext.Products.Add(product);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
                 return result.Entity;
             }
             catch(Exception ex)
@@ -42,7 +42,7 @@ namespace ServiceLib.ShoppersStore.Repositories
         }
 
         // product image info save to db
-        public ProductFileAddResponse ProductFileAdd(AddProductFile addProductFile)
+        public async Task<ProductFileAddResponse> ProductFileAdd(AddProductFile addProductFile)
         {
             ProductFileAddResponse response = new ProductFileAddResponse();
             using var transaction = appDbContext.Database.BeginTransaction();
@@ -58,15 +58,15 @@ namespace ServiceLib.ShoppersStore.Repositories
                     FilePath = addProductFile.FilePath
                 };
                 var productFileSaved = appDbContext.ProductFiles.Add(productFile);
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 // 2)
-                var product = appDbContext.Products
-                                    .Where(x => x.ProductId == addProductFile.ProductId).FirstOrDefault();
+                var product = await appDbContext.Products
+                                    .Where(x => x.ProductId == addProductFile.ProductId).FirstOrDefaultAsync();
                 if (product != null)
                 {
                     product.ProductFileId = productFileSaved.Entity.ProductFileId;
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace ServiceLib.ShoppersStore.Repositories
             return response;
         }
 
-        public IEnumerable<ProductDTO> GetAllProducts()
+        public async Task<IEnumerable<ProductDTO>> GetAllProducts()
         {
             List<ProductDTO> products = new List<ProductDTO>();
 
@@ -104,8 +104,8 @@ namespace ServiceLib.ShoppersStore.Repositories
             {
                 foreach (var _product in _products)
                 {
-                    var _productImage = appDbContext.ProductFiles
-                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefault();
+                    var _productImage = await appDbContext.ProductFiles
+                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefaultAsync();
                     if (_productImage != null)
                     {
                         // products with image
@@ -142,7 +142,7 @@ namespace ServiceLib.ShoppersStore.Repositories
             return products;
         }
 
-        public IEnumerable<ProductDTO> SearchProducts(string searchValue, string categoryId)
+        public async Task<IEnumerable<ProductDTO>> SearchProducts(string searchValue, string categoryId)
         {
             List<ProductDTO> products = new List<ProductDTO>();
             IQueryable<Product> _products = appDbContext.Products;
@@ -152,8 +152,8 @@ namespace ServiceLib.ShoppersStore.Repositories
 
             if (searchValue != null)
             {
-                _productsByNameDesc = _products
-                          .Where(x => x.ProductName.Contains(searchValue) || x.ProductDesc.Contains(searchValue)).ToList();
+                _productsByNameDesc = await _products
+                          .Where(x => x.ProductName.Contains(searchValue) || x.ProductDesc.Contains(searchValue)).ToListAsync();
             }
             if (categoryId != null)
             {
@@ -161,8 +161,8 @@ namespace ServiceLib.ShoppersStore.Repositories
                 {
                     int catId = Int32.Parse(categoryId);
 
-                    _productsByCategory = _products
-                             .Where(x => x.CategoryId == catId).ToList();
+                    _productsByCategory = await _products
+                             .Where(x => x.CategoryId == catId).ToListAsync();
                 }
                 catch (FormatException e)
                 {
@@ -181,8 +181,8 @@ namespace ServiceLib.ShoppersStore.Repositories
             {
                 foreach (var _product in _products)
                 {
-                    var _productImage = appDbContext.ProductFiles
-                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefault();
+                    var _productImage = await appDbContext.ProductFiles
+                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefaultAsync();
                     if (_productImage != null)
                     {
                         // products with image
@@ -217,16 +217,16 @@ namespace ServiceLib.ShoppersStore.Repositories
             return products;
         }
 
-        public ProductDTO GetProduct(int productId)
+        public async Task<ProductDTO> GetProduct(int productId)
         {
             ProductDTO product = new ProductDTO();
 
-            var _product = appDbContext.Products
-                                .Where(x => x.ProductId == productId).FirstOrDefault();
+            var _product = await appDbContext.Products
+                                .Where(x => x.ProductId == productId).FirstOrDefaultAsync();
             if (_product != null)
             {
-                var _productFile = appDbContext.ProductFiles
-                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefault();
+                var _productFile = await appDbContext.ProductFiles
+                                        .Where(x => x.ProductFileId == _product.ProductFileId).FirstOrDefaultAsync();
 
                 // product with image
                 if (_productFile != null)
@@ -258,9 +258,9 @@ namespace ServiceLib.ShoppersStore.Repositories
             // return null;
         }
 
-        public ProductDTO EditProduct(ProductDTO product)
+        public async Task<ProductDTO> EditProduct(ProductDTO product)
         {
-            var _product = appDbContext.Products.Where(x => x.ProductId == product.ProductId).FirstOrDefault();
+            var _product = await appDbContext.Products.Where(x => x.ProductId == product.ProductId).FirstOrDefaultAsync();
             if (_product != null)
             {
                 _product.CategoryId = product.CategoryId;
@@ -268,7 +268,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                 _product.ProductDesc = product.ProductDesc;
                 _product.Price = product.Price;
 
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
                 return product;
             }
             else
@@ -277,18 +277,18 @@ namespace ServiceLib.ShoppersStore.Repositories
             }
         }
 
-        public ProductFileEditResponse ProductFileEdit(ProductFileEditResponse _productFile)
+        public async Task<ProductFileEditResponse> ProductFileEdit(ProductFileEditResponse _productFile)
         {
             if (_productFile.ProductFileId > 0)
             {
                 // edit
                 // existing product image
-                var productFile = appDbContext.ProductFiles.Where(x => x.ProductFileId == _productFile.ProductFileId).FirstOrDefault();
+                var productFile = await appDbContext.ProductFiles.Where(x => x.ProductFileId == _productFile.ProductFileId).FirstOrDefaultAsync();
                 if (productFile != null)
                 {
                     productFile.FileName = _productFile.ProductImage;
                     productFile.FilePath = _productFile.ProductImagePath;
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     _productFile.ResponseCode = 0;
                     _productFile.ResponseMessage = "Image-EDIT : Success !";
@@ -304,22 +304,22 @@ namespace ServiceLib.ShoppersStore.Repositories
                 try
                 {
                     // 1) add @ ProductFiles                          
-                    var productFileSaved = appDbContext.ProductFiles.Add(new ProductFile()
+                    var productFileSaved = await appDbContext.ProductFiles.AddAsync(new ProductFile()
                     {
                         FileName = _productFile.ProductImage,
                         FilePath = _productFile.ProductImagePath,
                         ProductId = _productFile.ProductId,
                     });
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     // check for transaction rollback
                     // throw new Exception();
 
                     // 2) update @ Products
-                    var product_ = appDbContext.Products
-                                    .Where(x => x.ProductId == _productFile.ProductId).FirstOrDefault();
+                    var product_ = await appDbContext.Products
+                                    .Where(x => x.ProductId == _productFile.ProductId).FirstOrDefaultAsync();
                     product_.ProductFileId = productFileSaved.Entity.ProductFileId;
-                    appDbContext.SaveChanges();
+                    await appDbContext.SaveChangesAsync();
 
                     _productFile.ResponseCode = 0;
                     _productFile.ResponseMessage = "Image-EDIT : Success !";
@@ -337,12 +337,12 @@ namespace ServiceLib.ShoppersStore.Repositories
             return _productFile;
         }
 
-        public ProductDiscountDTO SetProductDiscount(ProductDiscountDTO discount)
+        public async Task<ProductDiscountDTO> SetProductDiscount(ProductDiscountDTO discount)
         {
             discount.APIResponse = new APIResponse();
 
-            var _product = appDbContext.Products
-                                .Where(x => x.ProductId == discount.ProductId).FirstOrDefault();
+            var _product = await appDbContext.Products
+                                .Where(x => x.ProductId == discount.ProductId).FirstOrDefaultAsync();
             if (_product != null)
             {
                 // update @ Products
@@ -351,8 +351,8 @@ namespace ServiceLib.ShoppersStore.Repositories
 
                 // insert @ DiscountHistories
                 // check if never discount has been set for this product
-                var discountSetFound = appDbContext.DiscountHistories
-                                .Where(x => x.ProductId == discount.ProductId).FirstOrDefault();
+                var discountSetFound = await appDbContext.DiscountHistories
+                                .Where(x => x.ProductId == discount.ProductId).FirstOrDefaultAsync();
                 if (discountSetFound != null)
                 {
                     // ever discount has been set for this product
@@ -367,7 +367,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                         lastDiscountSet.LastOrDefault().DiscountEffectiveEnd = DateTime.Now.AddDays(0);
                     }
                     // insert @ DiscountHistories
-                    appDbContext.DiscountHistories.Add(new DiscountHistory()
+                    await appDbContext.DiscountHistories.AddAsync(new DiscountHistory()
                     {
                         DiscountEffectiveBegin = DateTime.Now,
                         DiscountPercentage = discount.DiscountPercentage,
@@ -379,7 +379,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                 {
                     // never discount has been set for this product
                     // insert @ DiscountHistories
-                    appDbContext.DiscountHistories.Add(new DiscountHistory()
+                    await appDbContext.DiscountHistories.AddAsync(new DiscountHistory()
                     {
                         DiscountEffectiveBegin = DateTime.Now,
                         DiscountPercentage = discount.DiscountPercentage,
@@ -387,7 +387,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                     });
                 }
 
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 discount.APIResponse.ResponseCode = 0;
                 discount.APIResponse.ResponseMessage = "Discount Applied Successfully !";
@@ -402,10 +402,10 @@ namespace ServiceLib.ShoppersStore.Repositories
             return discount;
         }
 
-        public bool ResetProductDiscount(int productId)
+        public async Task<bool> ResetProductDiscount(int productId)
         {
-            var _product = appDbContext.Products
-                                .Where(x => x.ProductId == productId).FirstOrDefault();
+            var _product = await appDbContext.Products
+                                .Where(x => x.ProductId == productId).FirstOrDefaultAsync();
             if (_product != null)
             {
                 // update @ Products
@@ -414,8 +414,8 @@ namespace ServiceLib.ShoppersStore.Repositories
 
                 // @ DiscountHistories
                 // check if never discount has been set for this product
-                var discountSetFound = appDbContext.DiscountHistories
-                                .Where(x => x.ProductId == productId).FirstOrDefault();
+                var discountSetFound = await appDbContext.DiscountHistories
+                                .Where(x => x.ProductId == productId).FirstOrDefaultAsync();
                 if (discountSetFound != null)
                 {
                     // ever discount has been set for this product
@@ -429,7 +429,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                         lastDiscountSet.LastOrDefault().DiscountEffectiveEnd = DateTime.Now.AddDays(0);
                     }
                 }
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
                 return true;
             }
             else
