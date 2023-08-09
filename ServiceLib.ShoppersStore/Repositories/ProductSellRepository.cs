@@ -6,6 +6,8 @@ using ServiceLib.ShoppersStore.Interfaces;
 using EF.Core.ShoppersStore.ShoppersStoreDB;
 using EF.Core.ShoppersStore.ShoppersStoreDB.Models;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLib.ShoppersStore.Repositories
 {
@@ -19,7 +21,7 @@ namespace ServiceLib.ShoppersStore.Repositories
         }
 
         // checked for in-built transaction & exception@last moment
-        public BillDTO ProductBillCreate(BillDTO bill)
+        public async Task<BillDTO> ProductBillCreate(BillDTO bill)
         {
             using var transaction = appDbContext.Database.BeginTransaction();
             try
@@ -31,7 +33,7 @@ namespace ServiceLib.ShoppersStore.Repositories
 
                 // 1)
                 // insert @ Payment
-                var payment = appDbContext.Payments.Add(new Payment()
+                var payment = await appDbContext.Payments.AddAsync(new Payment()
                 {
                     AmountPaid = bill.Payment.AmountPaid,
                     BillRefCode = refCode,
@@ -43,7 +45,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                     ValidYear = bill.Payment.ValidYear,
                     TransactionDate = DateTime.Now
                 });
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 // check for exception
                 // throw new Exception();
@@ -52,8 +54,8 @@ namespace ServiceLib.ShoppersStore.Repositories
                 // insert @ ProductSell / Cart
                 foreach (var product in bill.Cart.Products)
                 {
-                    var _product = appDbContext.Products
-                                        .Where(x => x.ProductId == product.ProductId).FirstOrDefault();
+                    var _product = await appDbContext.Products
+                                        .Where(x => x.ProductId == product.ProductId).FirstOrDefaultAsync();
                     ProductSell productDb = new ProductSell()
                     {
                         ProductId = _product.ProductId,
@@ -64,9 +66,9 @@ namespace ServiceLib.ShoppersStore.Repositories
                         BillRefCode = refCode,
                         PaymentId = payment.Entity.PaymentId
                     };
-                    appDbContext.ProductSells.Add(productDb);
+                    await appDbContext.ProductSells.AddAsync(productDb);
                 }
-                appDbContext.SaveChanges();
+                await appDbContext.SaveChangesAsync();
 
                 // check for exception
                 // throw new Exception();

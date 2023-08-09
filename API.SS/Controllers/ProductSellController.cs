@@ -27,7 +27,7 @@ namespace API.SS.Controllers
         [Authorize("Shopper")]
         [HttpPost]
         [Route("billCreate")]
-        public IActionResult ProductBillCreate(BillDTO bill)
+        public async Task<IActionResult> ProductBillCreate(BillDTO bill)
         {
             bool modelInvalid = false;
             try
@@ -43,7 +43,7 @@ namespace API.SS.Controllers
                         ModelState.AddModelError("Amount Paid", "Amount Paid is Required !");
                         return BadRequest(ModelState);
                     }
-                    bill = _productSellRepo.ProductBillCreate(bill);
+                    bill = await _productSellRepo.ProductBillCreate(bill);
                     return Ok(bill);
                 }
                 else
@@ -71,7 +71,7 @@ namespace API.SS.Controllers
                     }
                     if (!modelInvalid)
                     {
-                        bill = _productSellRepo.ProductBillCreate(bill);
+                        bill = await _productSellRepo.ProductBillCreate(bill);
                         return Ok(bill);
                     }
                     else
