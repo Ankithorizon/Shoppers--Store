@@ -27,11 +27,11 @@ namespace API.SS.Controllers
 
         [HttpGet]
         [Route("productsWithImage")]
-        public IActionResult GetProductsWithImage()
+        public async Task<IActionResult> GetProductsWithImage()
         {
             try
             {
-                var allProducts = _reportRepo.GetProductsWithImage();
+                var allProducts = await _reportRepo.GetProductsWithImage();
                 return Ok(allProducts);
             }
             catch (Exception ex)
@@ -42,11 +42,11 @@ namespace API.SS.Controllers
 
         [HttpPost]
         [Route("monthlyStoreWise")]
-        public IActionResult MonthlyStoreWise(MonthlyTotalSalesData data)
+        public async Task<IActionResult> MonthlyStoreWise(MonthlyTotalSalesData data)
         {
             try
             {
-                List<MonthlyTotalSalesData> datas = _reportRepo.MonthlyStoreWise(data);
+                List<MonthlyTotalSalesData> datas = await _reportRepo.MonthlyStoreWise(data);
                 return Ok(datas);
             }
             catch (Exception ex)

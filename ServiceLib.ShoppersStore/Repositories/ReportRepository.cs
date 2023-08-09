@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLib.ShoppersStore.Repositories
 {
@@ -21,7 +23,7 @@ namespace ServiceLib.ShoppersStore.Repositories
 
 
 
-        public List<ProductWithImageDTO> GetProductsWithImage()
+        public async Task<List<ProductWithImageDTO>> GetProductsWithImage()
         {
             List<ProductWithImageDTO> datas = new List<ProductWithImageDTO>();
 
@@ -30,8 +32,8 @@ namespace ServiceLib.ShoppersStore.Repositories
             {
                 foreach (var product in products)
                 {
-                    var productFile = appDbContext.ProductFiles
-                                        .Where(x => x.ProductFileId == product.ProductFileId).FirstOrDefault();
+                    var productFile = await appDbContext.ProductFiles
+                                        .Where(x => x.ProductFileId == product.ProductFileId).FirstOrDefaultAsync();
                     if (productFile != null)
                     {
                         datas.Add(new ProductWithImageDTO()
@@ -58,12 +60,26 @@ namespace ServiceLib.ShoppersStore.Repositories
             return datas;
         }
 
-        public List<MonthlyTotalSalesData> MonthlyStoreWise(MonthlyTotalSalesData data)
+        public async Task<List<MonthlyTotalSalesData>> MonthlyStoreWise(MonthlyTotalSalesData data)
         {
             List<MonthlyTotalSalesData> datas = new List<MonthlyTotalSalesData>();
 
             var selectedYear = data.SelectedYear;
 
+
+            var groupByMonth = await appDbContext.Payments
+                                            .Where(p => p.TransactionDate.Year.ToString().Contains(Convert.ToInt32(selectedYear).ToString()))
+                                            .ToListAsync();           
+            var groupedPayments = groupByMonth.GroupBy(p => p.TransactionDate.Month)
+                                            .Select(pa => new { 
+                                                    Month = pa.Key,
+                                                    SelectedYear = selectedYear,
+                                                    TotalSales = pa.Sum(x => x.AmountPaid)
+                                                   })                                            
+                                            .ToList();
+            var orderedData = groupedPayments.OrderBy(x => x.Month);
+
+            /*
             var groupedMonthly = from p in appDbContext.Payments
                           .Where(x => x.TransactionDate.Year == Convert.ToInt32(selectedYear))
                                  group p
@@ -76,6 +92,9 @@ namespace ServiceLib.ShoppersStore.Repositories
                                  };
 
             var orderedData = groupedMonthly.OrderBy(x => x.Month);
+            */
+
+
             // foreach (var data_ in groupedMonthly)
             foreach (var data_ in orderedData)
             {
