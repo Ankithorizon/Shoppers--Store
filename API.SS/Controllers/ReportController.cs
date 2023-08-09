@@ -57,11 +57,11 @@ namespace API.SS.Controllers
 
         [HttpPost]
         [Route("monthlyProductWise")]
-        public IActionResult MonthlyProductWise(YearlyProductWiseSalesData data)
+        public async Task<IActionResult> MonthlyProductWise(YearlyProductWiseSalesData data)
         {
             try
             {
-                List<YearlyProductWiseSalesData> datas = _reportRepo.MonthlyProductWise(data);
+                List<YearlyProductWiseSalesData> datas = await _reportRepo.MonthlyProductWise(data);
                 return Ok(datas);
             }
             catch (Exception ex)
@@ -72,11 +72,11 @@ namespace API.SS.Controllers
 
         [HttpPost]
         [Route("selectedProductWise")]
-        public IActionResult SelectedProductWise(MonthlyProductWiseSalesData data)
+        public async Task<IActionResult> SelectedProductWise(MonthlyProductWiseSalesData data)
         {
             try
             {
-                List<MonthlyProductWiseSalesData> datas = _reportRepo.SelectedProductWise(data);
+                List<MonthlyProductWiseSalesData> datas = await _reportRepo.SelectedProductWise(data);
                 return Ok(datas);
             }
             catch (Exception ex)
@@ -87,11 +87,11 @@ namespace API.SS.Controllers
 
         [HttpPost]
         [Route("discountWise")]
-        public IActionResult DiscountWise(ProductDiscountSalesData data)
+        public async Task<IActionResult> DiscountWise(ProductDiscountSalesData data)
         {
             try
             {
-                List<ProductDiscountSalesData> datas = _reportRepo.DiscountWise(data);
+                List<ProductDiscountSalesData> datas = await _reportRepo.DiscountWise(data);
                 return Ok(datas);
             }
             catch (Exception ex)

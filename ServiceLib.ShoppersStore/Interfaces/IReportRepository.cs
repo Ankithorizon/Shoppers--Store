@@ -13,8 +13,8 @@ namespace ServiceLib.ShoppersStore.Interfaces
     {
         Task<List<ProductWithImageDTO>> GetProductsWithImage();
         Task<List<MonthlyTotalSalesData>> MonthlyStoreWise(MonthlyTotalSalesData data);
-        List<YearlyProductWiseSalesData> MonthlyProductWise(YearlyProductWiseSalesData data);
-        List<MonthlyProductWiseSalesData> SelectedProductWise(MonthlyProductWiseSalesData data);
-        List<ProductDiscountSalesData> DiscountWise(ProductDiscountSalesData data);
+        Task<List<YearlyProductWiseSalesData>> MonthlyProductWise(YearlyProductWiseSalesData data);
+        Task<List<MonthlyProductWiseSalesData>> SelectedProductWise(MonthlyProductWiseSalesData data);
+        Task<List<ProductDiscountSalesData>> DiscountWise(ProductDiscountSalesData data);
     }
 }

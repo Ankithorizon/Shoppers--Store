@@ -79,6 +79,7 @@ namespace ServiceLib.ShoppersStore.Repositories
                                             .ToList();
             var orderedData = groupedPayments.OrderBy(x => x.Month);
 
+            // ok
             /*
             var groupedMonthly = from p in appDbContext.Payments
                           .Where(x => x.TransactionDate.Year == Convert.ToInt32(selectedYear))
@@ -131,14 +132,14 @@ namespace ServiceLib.ShoppersStore.Repositories
         from Payments
         where PaymentId in (select PaymentId from ProductSells where ProductId=8)
         */
-        public List<YearlyProductWiseSalesData> MonthlyProductWise(YearlyProductWiseSalesData data)
+        public async Task<List<YearlyProductWiseSalesData>> MonthlyProductWise(YearlyProductWiseSalesData data)
         {
             List<YearlyProductWiseSalesData> datas = new List<YearlyProductWiseSalesData>();
             List<ProductSellDTO> productSellsData = new List<ProductSellDTO>();
 
-            var selectedProduct = appDbContext.Products
+            var selectedProduct = await appDbContext.Products
                                     .Include(x => x.ProductSells)
-                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefault();
+                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefaultAsync();
 
             var productName = "";
 
@@ -150,8 +151,8 @@ namespace ServiceLib.ShoppersStore.Repositories
                 {
                     foreach (var ps in selectedProduct.ProductSells)
                     {
-                        var payment = appDbContext.Payments
-                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear)).FirstOrDefault();
+                        var payment = await appDbContext.Payments
+                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear)).FirstOrDefaultAsync();
                         if (payment != null)
                         {
                             productSellsData.Add(new ProductSellDTO()
@@ -247,15 +248,15 @@ namespace ServiceLib.ShoppersStore.Repositories
 
         }
 
-        public List<MonthlyProductWiseSalesData> SelectedProductWise(MonthlyProductWiseSalesData data)
+        public async Task<List<MonthlyProductWiseSalesData>> SelectedProductWise(MonthlyProductWiseSalesData data)
         {
             List<MonthlyProductWiseSalesData> datas = new List<MonthlyProductWiseSalesData>();
             // List<ProductSell> productSellsData = new List<ProductSell>();
             List<ProductSellDTO> productSellsData = new List<ProductSellDTO>();
 
-            var selectedProduct = appDbContext.Products
+            var selectedProduct = await appDbContext.Products
                                     .Include(x => x.ProductSells)
-                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefault();
+                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefaultAsync();
 
             if (selectedProduct != null)
             {
@@ -265,8 +266,8 @@ namespace ServiceLib.ShoppersStore.Repositories
                 {
                     foreach (var ps in selectedProduct.ProductSells)
                     {
-                        var payment = appDbContext.Payments
-                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear) && x.TransactionDate.Month == data.SelectedMonth).FirstOrDefault();
+                        var payment = await appDbContext.Payments
+                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear) && x.TransactionDate.Month == data.SelectedMonth).FirstOrDefaultAsync();
                         if (payment != null)
                         {
                             // productSellsData.Add(ps);
@@ -320,14 +321,14 @@ namespace ServiceLib.ShoppersStore.Repositories
             return datas;
         }
 
-        public List<ProductDiscountSalesData> DiscountWise(ProductDiscountSalesData data)
+        public async Task<List<ProductDiscountSalesData>> DiscountWise(ProductDiscountSalesData data)
         {
             List<ProductDiscountSalesData> datas = new List<ProductDiscountSalesData>();
             List<ProductSellDTO> productSellsData = new List<ProductSellDTO>();
 
-            var selectedProduct = appDbContext.Products
+            var selectedProduct = await appDbContext.Products
                                     .Include(x => x.ProductSells)
-                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefault();
+                                    .Where(x => x.ProductId == data.SelectedProductId).FirstOrDefaultAsync();
 
             var productName = "";
 
@@ -339,8 +340,8 @@ namespace ServiceLib.ShoppersStore.Repositories
                 {
                     foreach (var ps in selectedProduct.ProductSells)
                     {
-                        var payment = appDbContext.Payments
-                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear)).FirstOrDefault();
+                        var payment = await appDbContext.Payments
+                                        .Where(x => x.BillRefCode == ps.BillRefCode && x.TransactionDate.Year == Convert.ToInt32(data.SelectedYear)).FirstOrDefaultAsync();
                         if (payment != null)
                         {
                             productSellsData.Add(new ProductSellDTO()
